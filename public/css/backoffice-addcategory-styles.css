@@ -1,0 +1,86 @@
+/* backoffice-addcategory-styles.css */
+.container {
+    max-width: 600px; 
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .d-flex.align-items-center.mb-3 {
+    margin-bottom: 20px;
+  }
+  
+  .bi-file-arrow-down-fill {
+    margin-right: 10px;
+  }
+  
+  h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #10478F;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    box-shadow: none;
+  }
+  
+  .btn-success {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #28a745;
+    border-color: #28a745;
+    border-radius: 4px;
+  }
+  
+  .btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+  
+
+  .container form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .container .form-group {
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .container button {
+    align-self: flex-end;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .container {
+      margin-top: 20px;
+      padding: 15px;
+    }
+  
+    h2 {
+      font-size: 20px;
+    }
+  
+    .form-control {
+      font-size: 14px;
+    }
+  
+    .btn-success {
+      font-size: 14px;
+      padding: 8px 16px;
+    }
+  }

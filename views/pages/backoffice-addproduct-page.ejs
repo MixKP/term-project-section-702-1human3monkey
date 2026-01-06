@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DAZZLE admin - Add Product</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="/css/backoffice-styles.css" />
+    <link
+      rel="stylesheet"
+      href="/css/backoffice-productedit-style.css"
+    />
+  </head>
+  <body>
+    <!-- Header -->
+    <%- include('../partials/backoffice/backoffice-header') %>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+      <div class="d-flex align-items-center mb-3">
+        <i
+          class="bi bi-file-arrow-down-fill text-primary"
+          style="font-size: 24px"
+        ></i>
+        <h2 class="ml-2 mb-0">Add Product</h2>
+      </div>
+
+      <form id="addProductForm" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="productName">Product Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="productName"
+            name="productName"
+            placeholder="Enter product name"
+          />
+        </div>
+        <div class="form-group">
+          <label for="productDescription">Product Description</label>
+          <textarea
+            class="form-control"
+            id="productDescription"
+            name="productDescription"
+            placeholder="Enter product description"
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <label for="productCategory">Category</label>
+          <select
+            class="form-control"
+            id="productCategory"
+            name="productCategory"
+          >
+            <% categories.forEach(category => { %>
+            <option value="<%= category.category_id %>">
+              <%= category.category_name %>
+            </option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="productPrice">Normal Price</label>
+          <input
+            type="number"
+            class="form-control"
+            id="productPrice"
+            name="productPrice"
+            placeholder="Enter product price"
+          />
+        </div>
+        <div class="form-group">
+          <label for="productDiscount">Discount Percent</label>
+          <input
+            type="number"
+            class="form-control"
+            id="productDiscount"
+            name="productDiscount"
+            placeholder="Enter discount percent"
+            value="0"
+            min="0"
+            max="1"
+            step="0.01"
+          />
+        </div>
+        <div class="form-group">
+          <label for="productImage">Product Image</label>
+          <input
+            type="file"
+            class="form-control-file"
+            id="productImage"
+            name="productImage"
+          />
+        </div>
+        <div class="form-group">
+          <label>Product Attributes</label>
+          <div class="table-responsive">
+            <table class="table table-bordered" id="attributesTable">
+              <thead>
+                <tr>
+                  <th>Color</th>
+                  <th>Size</th>
+                  <th>Quantity</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td data-cell="Color">
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="attributeColor[]"
+                      placeholder="Enter color"
+                      required
+                    />
+                  </td>
+                  <td data-cell="Size">
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="attributeSize[]"
+                      placeholder="Enter size"
+                      required
+                    />
+                  </td>
+                  <td data-cell="Quantity">
+                    <input
+                      type="number"
+                      class="form-control"
+                      name="attributeQuantity[]"
+                      placeholder="Enter quantity"
+                      required
+                    />
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-danger">Remove</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="4" class="text-center">
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      onclick="addAttribute()"
+                    >
+                      Add Attribute
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-success confirm-button">Submit</button>
+      </form>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("input[name='attributeColor[]']").each(function () {
+          updateColor(this);
+        });
+
+        $("#addProductForm").on("submit", function (e) {
+          e.preventDefault();
+          handleFormSubmission();
+        });
+
+        $("#attributesTable").on("click", ".btn-danger", function () {
+          $(this).closest("tr").remove();
+        });
+
+        $("#attributesTable").on(
+          "input",
+          "input[name='attributeColor[]']",
+          function () {
+            updateColor(this);
+          }
+        );
+      });
+
+      function handleFormSubmission() {
+        const formData = new FormData(
+          document.getElementById("addProductForm")
+        );
+
+        const attributes = [];
+        $("#attributesTable tbody tr").each(function () {
+          const color = $(this).find("input[name='attributeColor[]']").val();
+          const size = $(this).find("input[name='attributeSize[]']").val();
+          const quantity = $(this).find("input[name='attributeQuantity[]']").val();
+          if (color && size && quantity) {
+            attributes.push({ color, size, quantity });
+          }
+        });
+        formData.append("attributes", JSON.stringify(attributes));
+        formData.append("createdAt", new Date().toISOString());
+
+        $.ajax({
+          url: "/backoffice/product",
+          method: "POST",
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function (response) {
+            alert(response.message);
+            window.location.href = "/backoffice/product";
+          },
+          error: function (xhr) {
+            alert(xhr.responseJSON.error);
+          },
+        });
+      }
+
+      function addAttribute() {
+        const table = $("#attributesTable tbody");
+        const newRow = `
+          <tr>
+            <td data-cell="Color"><input type="text" class="form-control" name="attributeColor[]" placeholder="Enter color" required></td>
+            <td data-cell="Size"><input type="text" class="form-control" name="attributeSize[]" placeholder="Enter size" required></td>
+            <td data-cell="Quatity"><input type="number" class="form-control" name="attributeQuantity[]" placeholder="Enter quantity" required></td>
+            <td><button type="button" class="btn btn-danger" onclick="removeAttribute(this)">Remove</button></td>
+          </tr>
+        `;
+        $(newRow).insertBefore("#attributesTable tbody tr:last");
+      }
+
+      function updateColor(input) {
+        let color = input.value.trim();
+        if (/^#[0-9A-F]{6}$/i.test(color)) {
+          input.style.backgroundColor = color;
+          input.style.color = getTextColor(color);
+        } else {
+          input.style.backgroundColor = "";
+        }
+      }
+
+      function getTextColor(hex) {
+        hex = hex.replace("#", "");
+        let r = parseInt(hex.substring(0, 2), 16);
+        let g = parseInt(hex.substring(2, 4), 16);
+        let b = parseInt(hex.substring(4, 6), 16);
+        let brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness > 125 ? "#000000" : "#FFFFFF";
+      }
+    </script>
+  </body>
+</html>

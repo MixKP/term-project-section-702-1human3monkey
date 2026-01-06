@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F1 Champions - Responsive Table</title>
+  <style>
+    /* Base styling */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1e1e1e;
+      color: white;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: #262626;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .heading {
+      background-color: #000;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    h1 {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    th {
+      font-weight: bold;
+      background-color: #333;
+    }
+    
+    .champion {
+      padding: 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .champion-info {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .champion-info p {
+      margin: 3px 0;
+    }
+    
+    /* Media query for mobile view */
+    @media (max-width: 650px) {
+      /* Hide table headers on mobile */
+      th {
+        display: none;
+      }
+      
+      /* Convert table cells to block display */
+      td {
+        display: block;
+        position: relative;
+        padding-left: 50%;
+        text-align: right;
+        border-bottom: none;
+      }
+      
+      /* Add labels for each cell using data attributes */
+      td:before {
+        content: attr(data-cell);
+        position: absolute;
+        left: 15px;
+        font-weight: 700;
+        text-transform: capitalize;
+        text-align: left;
+      }
+      
+      /* Add a border after each row */
+      tr {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: block;
+        margin-bottom: 15px;
+        background-color: rgba(80, 80, 80, 0.1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="heading">
+      <h1>THE LAST 14 WORLD F1 CHAMPIONS</h1>
+    </div>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Poles</th>
+          <th>Podiums</th>
+          <th>Wins</th>
+          <th>Career Points</th>
+          <th>Championships</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-cell="Name">Max Verstappen</td>
+          <td data-cell="Poles">22</td>
+          <td data-cell="Podiums">80</td>
+          <td data-cell="Wins">37</td>
+          <td data-cell="Career Points">2080.5</td>
+          <td data-cell="Championships">2</td>
+        </tr>
+        <tr>
+          <td data-cell="Name">Lewis Hamilton</td>
+          <td data-cell="Poles">103</td>
+          <td data-cell="Podiums">192</td>
+          <td data-cell="Wins">103</td>
+          <td data-cell="Career Points">4443.5</td>
+          <td data-cell="Championships">7</td>
+        </tr>
+        <tr>
+          <td data-cell="Name">Sebastian Vettel</td>
+          <td data-cell="Poles">57</td>
+          <td data-cell="Podiums">122</td>
+          <td data-cell="Wins">53</td>
+          <td data-cell="Career Points">3098</td>
+          <td data-cell="Championships">4</td>
+        </tr>
+        <tr>
+          <td data-cell="Name">Nico Rosberg</td>
+          <td data-cell="Poles">30</td>
+          <td data-cell="Podiums">57</td>
+          <td data-cell="Wins">23</td>
+          <td data-cell="Career Points">1594.5</td>
+          <td data-cell="Championships">1</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

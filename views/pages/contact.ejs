@@ -1,0 +1,92 @@
+<%- include("../partials/header.ejs") %>
+    <%- include("../partials/navbarFrontPage.ejs") %>
+        <div id="contact">
+            <div
+                class="container-fluid py-4 bg-secondary-subtle d-flex flex-column justify-content-center align-items-center border-bottom border-black">
+                <h1 class="title">
+                    <%= pageTitle %>
+                </h1>
+                <p class="description text-secondary">
+                    <%= pageDescription %>
+                </p>
+            </div>
+
+            <div class="d-flex flex-row justify-content-between align-items-top px-lg-5 row gap-lg-1">
+                <div class="p-4 border-black border col col-12 col-lg-5 mb-4 mb-lg-0 border-top-0">
+                    <h1>Address: <%= pageContact.address %>
+                    </h1>
+                    <div id="map"></div>
+                </div>
+
+                <div class="p-4 border-black border col col-12 col-lg-5 border-top-0">
+                    <h1 class="mb-5">Contact Information</h1>
+
+                    <h2>Email</h2>
+                    <p class="text-secondary">
+                        <%= pageContact.email %>
+                    </p>
+
+                    <h2>Phone</h2>
+                    <p class="text-secondary">
+                        <%= pageContact.phone %>
+                    </p>
+
+                    <h2>Business hours</h2>
+                    <p class="text-secondary">
+                        <%= pageContact.businessHours %>
+                    </p>
+
+                    <h2>Social Media</h2>
+                    <div class="mb-3 gap-lg-4 d-flex">
+                        <div>
+                            <a href="<%= pageContact.social.instagram %>"><i
+                                    class="bi bi-instagram text-danger-emphasis fs-4 mr-2"></i></a>
+                        </div>
+                        <div>
+                            <a href="<%= pageContact.social.facebook %>" <i
+                                class="bi bi-facebook text-danger-emphasis fs-4"></i></a>
+                        </div>
+                        <div>
+                            <a href="<%= pageContact.social.twitter %>"><i
+                                    class="bi bi-twitter text-danger-emphasis fs-4"></i></a>
+                        </div>
+                    </div>
+                    <a href="mailto:dazzle@contactmail.com">
+                        <button>Send us a message</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaflet API Map -->
+        <script>
+            var map = L.map('map').setView([14.585554, 100.448871
+            ], 15.5);
+
+            var marker = L.marker([14.585554, 100.448871]).addTo(map);
+
+            L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+                maxZoom: 20,
+            }).addTo(map);
+
+            let logo = document.querySelector(".navbar-brand");
+            if (logo) {
+                logo.style.position = "absolute";
+                logo.style.top = "5.5px";
+                logo.style.left = "50%";
+                logo.style.transform = "translateX(-50%)";
+            }
+            const togglerIcon = document.querySelector(".navbar-toggler-icon");
+            if (togglerIcon) {
+                togglerIcon.addEventListener("click", function() {
+                    if (logo) {
+                        logo.style.position = "absolute";
+                        logo.style.top = "5.5px";
+                        logo.style.left = "50%";
+                        logo.style.transform = "translateX(-50%)";
+                    }
+                });
+            }
+        </script>
+
+<%- include("../partials/footer.ejs") %>

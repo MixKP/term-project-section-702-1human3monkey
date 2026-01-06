@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DAZZLE admin - Add Category</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="/css/backoffice-styles.css" />
+    <link
+      rel="stylesheet"
+      href="/css/backoffice-addcategory-styles.css"
+    />
+  </head>
+  <body>
+    <!-- Header -->
+    <%- include('../partials/backoffice/backoffice-header') %>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+      <div class="d-flex align-items-center mb-3">
+        <i
+          class="bi bi-file-arrow-down-fill text-primary"
+          style="font-size: 24px"
+        ></i>
+        <h2 class="ml-2 mb-0">New Category</h2>
+      </div>
+
+      <form id="addCategoryForm">
+        <div class="form-group">
+          <label for="categoryName">Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="categoryName"
+            name="categoryName"
+            placeholder="Enter category name"
+          />
+          <label for="categoryName">Image</label>
+          <input type="file" class="form-control" name="imageInput" id="imageInput" />
+        </div>
+        <button type="submit" class="btn btn-success">Submit</button>
+      </form>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      document.querySelector(".menusidebar").remove();
+      $(document).ready(function () {
+        $("#addCategoryForm").on("submit", function (event) {
+          event.preventDefault();
+          handleFormSubmission();
+        });
+      });
+
+      function handleFormSubmission() {
+        const formData = new FormData(document.getElementById("addCategoryForm"));
+
+        $.ajax({
+          url: "/backoffice/category",
+          method: "POST",
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function (response) {
+            alert(response.message);
+            window.location.href = "/backoffice/category";
+          },
+          error: function (xhr) {
+            alert(xhr.responseJSON.error);
+          },
+        });
+      }
+    </script>
+  </body>
+</html>

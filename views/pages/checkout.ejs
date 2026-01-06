@@ -1,0 +1,209 @@
+<%- include('../partials/header') %>
+  <%- include('../partials/navbarFrontPage') %>
+    <div class="container mt-4">
+      <form action="/checkout" method="post">
+        <div class="row equal-height">
+          <!-- Product Summary -->
+          <div class="col-lg-6" id="product-summary-col">
+            <div class="card mb-3 border-light shadow-sm">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title fw-bold">Product Summary</h5>
+                <div class="table-product-wrapper">
+                  <table class="table-product-selected">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>Product Name</th>
+                        <th>Size</th>
+                        <th>Color</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% if (data && data.order && data.order.products) { %>
+                        <% data.order.products.forEach(product=> { %>
+                          <tr>
+                            <td data-cell="Image">
+                              <% if (product.src) { %>
+                                <img src="<%= product.src %>" alt="<%= product.name %>" class="img-thumbnail"
+                                  onerror="this.onerror=null; this.src='https://picsum.photos/200/300';">
+                                <% } else { %>
+                                  <img src="https://picsum.photos/200/300" alt="<%= product.name %>"
+                                    class="img-thumbnail">
+                                  <% } %>
+                            </td>
+                            <td data-cell="Product Name">
+                              <%= product.name %>
+                            </td>
+                            <td data-cell="Size">
+                              <%= product.size %>
+                            </td>
+                            <td data-cell="Color"><span class="badge bg-danger rounded-circle"></span>
+                              <%= product.color %>
+                            </td>
+                            <td data-cell="Price">
+                              <%= product.price %>
+                                THB
+                            </td>
+                            <td class="flex">
+                              <input type="number" id="quantity" name="items[<%= product.cart_item_id %>][quantity]" class="form-control" value="<%= product.quantity %>"
+                                min="1" max="99" pattern="[0-9]*" inputmode="numeric">
+                              <input type="hidden" name="items[<%= product.cart_item_id %>][product_id]" value="<%= product.product_id %>">
+                              <input type="hidden" name="items[<%= product.cart_item_id %>][product_attribute_id]" value="<%= product.product_attribute_id %>">
+                            </td>
+                            <td>
+                              <a href="/cart/delete/<%= product.cart_item_id %>" class="icon-link">
+                                <i class="bi bi-trash3"></i>
+                              </a>
+                            </td>
+                          </tr>
+                          <% }) %>
+                            <% } else { %>
+                              <tr>
+                                <td colspan="5">No products available.</td>
+                              </tr>
+                              <% } %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="price-summary">
+              <% if (data && data.order && data.order.products) { %>
+                <% let total=0; %>
+                  <% data.order.products.forEach(product=> { %>
+                    <% const itemTotal=product.price * product.quantity; %>
+                      <% total +=itemTotal; %>
+                        <div class="d-flex justify-content-between mb-2">
+                          <div class="price-item">
+                            <span>
+                              <%= product.name %>
+                            </span>
+                            <span class="ms-4 size-label">
+                              <%= product.size %>
+                            </span>
+                            <span class="ms-2"><span class="badge bg-danger rounded-circle"></span>
+                              <%= product.color %>
+                            </span>
+                          </div>
+                          <div class="price-values">
+                            <span>
+                              <%= itemTotal %>
+                                THB
+                            </span>
+                          </div>
+                        </div>
+                        <% }) %>
+                          <div class="d-flex justify-content-between mb-2">
+                            <span>Shipping</span>
+                            <span></span>
+                            <span>
+                              <%= data.order.shipping.cost %>
+                                <%= data.order.shipping.currency %>
+                            </span>
+                          </div>
+                          <div class="d-flex justify-content-between fw-bold total-row">
+                            <span>TOTAL</span>
+                            <span></span>
+                            <span>
+                              <%= total + data.order.shipping.cost %>
+                                <%= data.order.shipping.currency %>
+                            </span>
+                          </div>
+                          <% } %>
+            </div>
+          </div>
+
+          <!-- Contact, Delivery, Payment -->
+          <div class="col-lg-6 mb-3" id="contact-payment-col">
+            <div class="card border-light shadow-sm h-100">
+              <div class="card-body bg-opacity-25 d-flex flex-column">
+                <h5 class="card-title fw-bold">Contact</h5>
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input type="email" class="form-control" id="email"
+                    value="<%= (data && session.email) ? session.email : '' %>" placeholder="Enter email" required>
+                </div>
+                <h5 class="card-title fw-bold">Delivery</h5>
+                <div class="mb-3">
+                  <label for="country" class="form-label">Country/Region</label>
+                  <input type="text" class="form-control" id="country" value="Thailand" readonly>
+                </div>
+                <div class="row mb-3">
+                  <div class="col">
+                    <label for="firstName" class="form-label">First name</label>
+                    <input type="text" class="form-control" id="firstName"
+                      value="<%= (data && session.firstName) ? session.firstName : '' %>" placeholder="Enter first name"
+                      required>
+                  </div>
+                  <div class="col">
+                    <label for="lastName" class="form-label">Last name</label>
+                    <input type="text" class="form-control" id="lastName"
+                      value="<%= (data && session.lastName) ? session.lastName : '' %>" placeholder="Enter last name"
+                      required>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="address" class="form-label">Address</label>
+                  <input type="text" class="form-control" id="address" name="address"
+                    value="<%= (data && data.customer && data.customer.delivery && data.customer.delivery.street) ? data.customer.delivery.street : '' %>"
+                    placeholder="Enter address" required>
+                </div>
+                <div class="row mb-3">
+                  <div class="col">
+                    <label for="city" class="form-label">City</label>
+                    <input type="text" class="form-control" id="city" name="city"
+                      value="<%= (data && data.customer && data.customer.delivery && data.customer.delivery.city) ? data.customer.delivery.city : '' %>"
+                      placeholder="Enter city" required>
+                  </div>
+                  <div class="col">
+                    <label for="province" class="form-label">Province</label>
+                    <input type="text" class="form-control" id="province" name="province"
+                      value="<%= (data && data.customer && data.customer.delivery && data.customer.delivery.province) ? data.customer.delivery.province : '' %>"
+                      placeholder="Enter province" required>
+                  </div>
+                  <div class="col">
+                    <label for="postalCode" class="form-label">Postcode</label>
+                    <input type="text" class="form-control" id="postalCode" name="zip_code"
+                      value="<%= (data && data.customer && data.customer.delivery && data.customer.delivery.zip_code) ? data.customer.delivery.zip_code : '' %>"
+                      placeholder="Enter postal code" required>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="phone" class="form-label">Phone</label>
+                  <input type="tel" class="form-control" id="phone" name="phone_number"
+                    value="<%= (data && data.customer && data.customer.delivery && data.customer.delivery.phone_number) ? data.customer.delivery.phone_number : '' %>"
+                    placeholder="Enter phone number" required>
+                </div>
+                <h5 class="card-title fw-bold">Payment</h5>
+                <div class="credit-card-form">
+                  <div class="creditbox mb-3">
+                    <label for="creditCard" class="form-label">Credit card</label>
+                  </div>
+                  <input type="text" class="form-control" id="creditCard" name="card_number"
+                    value="<%= (data && data.customer && data.customer.payment && data.customer.payment.card_number) ? data.customer.payment.card_number : '' %>"
+                    placeholder="Card number" required>
+                  <div class="row mb-3">
+                    <div class="col" style="padding: 0; padding-right: 5px;">
+                      <label for="expiryDate" class="form-label">Expiration Date (MM/YY)</label>
+                      <input type="text" class="form-control" id="expiryDate" name="expiration_date"
+                        value="<%= (data && data.customer && data.customer.payment && data.customer.payment.expiration_date) ? data.customer.payment.expiration_date : '' %>"
+                        placeholder="MM/YY" required>
+                    </div>
+                    <div class="col" style="padding: 0; padding-left: 5px;">
+                      <label for="securityCode" class="form-label">Security Code</label>
+                      <input type="text" class="form-control" id="securityCode" name="cvv"
+                        value="<%= (data && data.customer && data.customer.payment && data.customer.payment.cvv) ? data.customer.payment.cvv : '' %>"
+                        placeholder="Security Code" required>
+                    </div>
+                  </div>
+                </div>
+                <button type="submit" class="pay-btn">PAY NOW</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <%- include('../partials/footer') %>

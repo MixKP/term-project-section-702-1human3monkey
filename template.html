@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robust Table Example</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Koh+Santepheap:wght@100;400;700&display=swap');
+    @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+
+    body {
+      padding-top: 0;
+      margin: 0;
+      font-family: 'Koh Santepheap', sans-serif;
+      background-color: #f2f2f2;
+    }
+
+    .header {
+      width: 100%;
+      height: 60px;
+      background: #10478F;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      position: relative;
+    }
+
+    .header-title {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.6px;
+      margin: 0;
+    }
+
+    .content {
+      padding: 20px;
+      background-color: white;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      margin: 20px;
+    }
+
+    /* Enhanced Table Styling */
+    .robust-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .robust-table thead th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 14px;
+      color: #333;
+      padding: 15px;
+      border-bottom: 2px solid #dee2e6;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .robust-table tbody tr {
+      transition: background-color 0.2s;
+    }
+
+    .robust-table tbody tr:hover {
+      background-color: #f0f8ff;
+    }
+
+    .robust-table td {
+      padding: 12px 15px;
+      vertical-align: middle;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .robust-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .action-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .action-button {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: #666;
+      font-size: 20px;
+      transition: color 0.2s;
+    }
+
+    .action-button:hover {
+      color: #10478F;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      background-color: white;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      transition: background-color 0.2s;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #f1f1f1;
+    }
+
+    .action-dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .status-badge {
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 12px;
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    .status-active {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .status-inactive {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
+    .status-pending {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .custom-checkbox {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    
+    .bulk-actions {
+      display: none;
+      margin-bottom: 15px;
+      background-color: #f8f9fa;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #dee2e6;
+      align-items: center;
+    }
+
+    .bulk-actions-text {
+      margin-right: 15px;
+      font-weight: 500;
+    }
+
+    .pagination-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .pagination-info {
+      color: #6c757d;
+      font-size: 14px;
+    }
+
+    .pagination {
+      display: flex;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .pagination li {
+      margin: 0 5px;
+    }
+
+    .pagination li a {
+      color: #10478F;
+      padding: 6px 12px;
+      text-decoration: none;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .pagination li a:hover {
+      background-color: #e9ecef;
+    }
+
+    .pagination li.active a {
+      background-color: #10478F;
+      color: white;
+      border-color: #10478F;
+    }
+
+    .search-container {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .search-input-group {
+      display: flex;
+      max-width: 300px;
+    }
+
+    .search-input {
+      border: 1px solid #ced4da;
+      border-right: none;
+      border-radius: 4px 0 0 4px;
+      padding: 8px 15px;
+      font-size: 14px;
+    }
+
+    .search-button {
+      border: 1px solid #ced4da;
+      border-left: none;
+      border-radius: 0 4px 4px 0;
+      background-color: #f8f9fa;
+      color: #10478F;
+      padding: 0 15px;
+    }
+
+    .items-per-page {
+      display: flex;
+      align-items: center;
+    }
+
+    .items-per-page select {
+      margin-left: 10px;
+      padding: 6px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+    }
+
+    .product-image {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    /* Sortable headers */
+    .sortable {
+      cursor: pointer;
+      position: relative;
+    }
+
+    .sortable::after {
+      content: "⇅";
+      position: absolute;
+      right: 8px;
+      color: #999;
+    }
+
+    .sortable.asc::after {
+      content: "↑";
+      color: #10478F;
+    }
+
+    .sortable.desc::after {
+      content: "↓";
+      color: #10478F;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1 class="header-title">Product Management</h1>
+  </div>
+
+  <div class="content">
+    <div class="search-container">
+      <div class="search-input-group">
+        <input type="text" class="search-input" placeholder="Search products...">
+        <button class="search-button">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+      <div class="items-per-page">
+        <span>Show</span>
+        <select>
+          <option>10</option>
+          <option>25</option>
+          <option>50</option>
+          <option>100</option>
+        </select>
+        <span>entries</span>
+      </div>
+    </div>
+
+    <div class="bulk-actions" id="bulkActions">
+      <span class="bulk-actions-text">3 items selected</span>
+      <button class="btn btn-sm btn-danger me-2">Delete Selected</button>
+      <button class="btn btn-sm btn-secondary">Deactivate</button>
+    </div>
+
+    <div class="table-responsive">
+      <table class="robust-table">
+        <thead>
+          <tr>
+            <th width="40">
+              <div class="checkbox-container">
+                <input type="checkbox" class="custom-checkbox" id="selectAll">
+              </div>
+            </th>
+            <th width="80">Image</th>
+            <th class="sortable">Product Name</th>
+            <th class="sortable">Category</th>
+            <th class="sortable">SKU</th>
+            <th class="sortable">Price</th>
+            <th class="sortable">Stock</th>
+            <th>Status</th>
+            <th width="60">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="checkbox-container">
+                <input type="checkbox" class="custom-checkbox row-checkbox">
+              </div>
+            </td>
+            <td><img src="/api/placeholder/60/60" alt="Product" class="product-image"></td>
+            <td>Smartphone X Pro</td>
+            <td>Electronics</td>
+            <td>SP-X-PRO-001</td>
+            <td>฿24,990</td>
+            <td>45</td>
+            <td><span class="status-badge status-active">Active</span></td>
+            <td>
+              <div class="action-dropdown">
+                <button class="action-button">
+                  <i class="bi bi-three-dots-vertical"></i>
+                </button>
+                <div class="dropdown-content">
+                  <a href="#"><i class="bi bi-pencil me-2"></i> Edit</a>
+                  <a href="#"><i class="bi bi-eye me-2"></i> View</a>
+                  <a href="#" class="text-danger"><i class="bi bi-trash me-2"></i> Delete</a>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="checkbox-container">
+                <input type="checkbox" class="custom-checkbox row-checkbox">
+              </div>
+            </td>
+            <td><img src="/api/placeholder/60/60" alt="Product" class="product-image"></td>
+            <td>Wireless Earbuds</td>
+            <td>Audio</td>
+            <td>WE-BT-002</td>
+            <td>฿3,590</td>
+            <td>120</td>
+            <td><span class="status-badge status-active">Active</span></td>
+            <td>
+              <div class="action-dropdown">
+                <button class="action-button">
+                  <i class="bi bi-three-dots-vertical"></i>
+                </button>
+                <div class="dropdown-content">
+                  <a href="#"><i class="bi bi-pencil me-2"></i> Edit</a>
+                  <a href="#"><i class="bi bi-eye me-2"></i> View</a>
+                  <a href="#" class="text-danger"><i class="bi bi-trash me-2"></i> Delete</a>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="checkbox-container">
+                <input type="checkbox" class="custom-checkbox row-checkbox">
+              </div>
+            </td>
+            <td><img src="/api/placeholder/60/60" alt="Product" class="product-image"></td>
+            <td>Smart Watch Series 5</td>
+            <td>Wearables</td>
+            <td>SW-S5-003</td>
+            <td>฿8,990</td>
+            <td>18</td>
+            <td><span class="status-badge status-pending">Low Stock</span></td>
+            <td>
+              <div class="action-dropdown">
+                <button class="action-button">
+                  <i class="bi bi-three-dots-vertical"></i>
+                </button>
+                <div class="dropdown-content">
+                  <a href="#"><i class="bi bi-pencil me-2"></i> Edit</a>
+                  <a href="#"><i class="bi bi-eye me-2"></i> View</a>
+                  <a href="#" class="text-danger"><i class="bi bi-trash me-2"></i> Delete</a>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="checkbox-container">
+                <input type="checkbox" class="custom-checkbox row-checkbox">
+              </div>
+            </td>
+            <td><img src="/api/placeholder/60/60" alt="Product" class="product-image"></td>
+            <td>Gaming Laptop Elite</td>
+            <td>Computers</td>
+            <td>GL-E-004</td>
+            <td>฿45,900</td>
+            <td>8</td>
+            <td><span class="status-badge status-pending">Low Stock</span></td>
+            <td>
+              <div class="action-dropdown">
+                <button class="action-button">
+                  <i class="bi bi-three-dots-vertical"></i>
+                </button>
+                <div class="dropdown-content">
+                  <a href="#"><i class="bi bi-pencil me-2"></i> Edit</a>
+                  <a href="#"><i class="bi bi-eye me-2"></i> View</a>
+                  <a href="#" class="text-danger"><i class="bi bi-trash me-2"></i> Delete</a>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="checkbox-container">
+                <input type="checkbox" class="custom-checkbox row-checkbox">
+              </div>
+            </td>
+            <td><img src="/api/placeholder/60/60" alt="Product" class="product-image"></td>
+            <td>4K TV Ultra</td>
+            <td>Home Entertainment</td>
+            <td>TV-4K-005</td>
+            <td>฿32,900</td>
+            <td>0</td>
+            <td><span class="status-badge status-inactive">Out of Stock</span></td>
+            <td>
+              <div class="action-dropdown">
+                <button class="action-button">
+                  <i class="bi bi-three-dots-vertical"></i>
+                </button>
+                <div class="dropdown-content">
+                  <a href="#"><i class="bi bi-pencil me-2"></i> Edit</a>
+                  <a href="#"><i class="bi bi-eye me-2"></i> View</a>
+                  <a href="#" class="text-danger"><i class="bi bi-trash me-2"></i> Delete</a>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination-container">
+      <div class="pagination-info">
+        Showing 1 to 5 of 25 entries
+      </div>
+      <ul class="pagination">
+        <li><a href="#">Previous</a></li>
+        <li class="active"><a href="#">1</a></li>
+        <li><a href="#">2</a></li>
+        <li><a href="#">3</a></li>
+        <li><a href="#">4</a></li>
+        <li><a href="#">5</a></li>
+        <li><a href="#">Next</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // Handle the select all checkbox
+    document.getElementById('selectAll').addEventListener('change', function() {
+      const isChecked = this.checked;
+      document.querySelectorAll('.row-checkbox').forEach(checkbox => {
+        checkbox.checked = isChecked;
+      });
+      updateBulkActions();
+    });
+
+    // Handle individual checkbox changes
+    document.querySelectorAll('.row-checkbox').forEach(checkbox => {
+      checkbox.addEventListener('change', updateBulkActions);
+    });
+
+    // Update bulk actions visibility
+    function updateBulkActions() {
+      const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
+      const bulkActions = document.getElementById('bulkActions');
+      
+      if (checkedBoxes.length > 0) {
+        bulkActions.style.display = 'flex';
+        document.querySelector('.bulk-actions-text').textContent = `${checkedBoxes.length} items selected`;
+      } else {
+        bulkActions.style.display = 'none';
+      }
+    }
+
+    // Handle column sorting
+    document.querySelectorAll('th.sortable').forEach(header => {
+      header.addEventListener('click', function() {
+        // Remove sort classes from other headers
+        document.querySelectorAll('th.sortable').forEach(h => {
+          if (h !== this) {
+            h.classList.remove('asc', 'desc');
+          }
+        });
+        
+        // Toggle sort direction
+        if (this.classList.contains('asc')) {
+          this.classList.remove('asc');
+          this.classList.add('desc');
+        } else if (this.classList.contains('desc')) {
+          this.classList.remove('desc');
+          this.classList.add('asc');
+        } else {
+          this.classList.add('asc');
+        }
+        
+        // Here you would add the actual sorting logic for the table data
+        // This is a placeholder that would connect to your backend sorting
+        console.log(`Sorting by ${this.textContent} in ${this.classList.contains('asc') ? 'ascending' : 'descending'} order`);
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<div class="products-section">
+  <h2 class="section-title">Search Result for: <%= pageTitle %></h2>
+
+  <div id="products-grid" class="products-grid"></div>
+  <div id="no-products" class="no-products" style="display: none;">
+    <p>No products found</p>
+  </div>
+
+  <div id="pagination" class="pagination"></div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const allProducts = JSON.parse('<%- JSON.stringify(products || []) %>');
+    const productsPerPage = 8;
+    let currentPage = 1;
+
+    function createProductCard(product) {
+      const productCard = document.createElement("div");
+      productCard.classList.add("product-item", "card");
+
+      const productLink = document.createElement("a");
+      productLink.href = `/product/${product.product_id}`;
+
+      const productImage = document.createElement("img");
+      productImage.classList.add("card-img-top");
+      productImage.src = product.image_path || "/public/images/placeholder.jpg";
+      productImage.alt = product.product_name;
+
+      const productInfo = document.createElement("div");
+      productInfo.classList.add("product-info", "card-body");
+
+      const productTitle = document.createElement("h5");
+      productTitle.classList.add("card-title");
+      productTitle.textContent = product.product_name;
+
+      const productPrice = document.createElement("div");
+      productPrice.classList.add("product-price", "card-text");
+
+      if (product.discount_percent > 0) {
+        const originalPrice = document.createElement("span");
+        originalPrice.classList.add("original-price");
+        originalPrice.textContent = `฿${parseFloat(product.normal_price).toLocaleString()}`;
+
+        const discountPrice = document.createElement("span");
+        discountPrice.classList.add("discount-price");
+        discountPrice.textContent = `฿${(parseFloat(product.normal_price) - (parseFloat(product.normal_price) * parseFloat(product.discount_percent))).toLocaleString()}`;
+
+        productPrice.appendChild(originalPrice);
+        productPrice.appendChild(discountPrice);
+      } else {
+        productPrice.textContent = `฿${parseFloat(product.normal_price).toLocaleString()}`;
+      }
+
+      productInfo.appendChild(productTitle);
+      productInfo.appendChild(productPrice);
+      productLink.appendChild(productImage);
+      productLink.appendChild(productInfo);
+      productCard.appendChild(productLink);
+
+      return productCard;
+    }
+
+    function renderProducts() {
+      const productsGrid = document.getElementById("products-grid");
+      const noProducts = document.getElementById("no-products");
+      productsGrid.innerHTML = "";
+
+      const start = (currentPage - 1) * productsPerPage;
+      const end = start + productsPerPage;
+      const paginatedProducts = allProducts.slice(start, end);
+
+      if (paginatedProducts.length > 0) {
+        noProducts.style.display = "none";
+        paginatedProducts.forEach(product => {
+          productsGrid.appendChild(createProductCard(product));
+        });
+      } else {
+        noProducts.style.display = "block";
+      }
+    }
+
+    function renderPagination() {
+      const paginationContainer = document.getElementById("pagination");
+      paginationContainer.innerHTML = "";
+      const totalPages = Math.ceil(allProducts.length / productsPerPage);
+      
+      console.log(`Total Products: ${allProducts.length}, Total Pages: ${totalPages}`);
+
+      if (totalPages <= 1) return;
+
+      const paginationDiv = document.createElement("div");
+      paginationDiv.classList.add("pagination");
+
+      if (currentPage > 1) {
+        const firstPage = document.createElement("a");
+        firstPage.href = "#";
+        firstPage.classList.add("page-btn");
+        firstPage.textContent = "First";
+        firstPage.onclick = (e) => {
+          e.preventDefault();
+          changePage(1);
+        };
+        paginationDiv.appendChild(firstPage);
+      }
+
+      let startPage = Math.max(1, currentPage - 2);
+      let endPage = Math.min(totalPages, currentPage + 2);
+
+      if (endPage - startPage < 4 && totalPages > 4) {
+        if (startPage === 1) {
+          endPage = Math.min(totalPages, 5);
+        } else if (endPage === totalPages) {
+          startPage = Math.max(1, totalPages - 4);
+        }
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
+        const pageLink = document.createElement("a");
+        pageLink.href = "#";
+        pageLink.classList.add("page-btn");
+        if (i === currentPage) {
+          pageLink.classList.add("active");
+        }
+        pageLink.textContent = i;
+        pageLink.onclick = (e) => {
+          e.preventDefault();
+          changePage(i);
+        };
+        paginationDiv.appendChild(pageLink);
+      }
+
+      if (currentPage < totalPages) {
+        const lastPage = document.createElement("a");
+        lastPage.href = "#";
+        lastPage.classList.add("page-btn");
+        lastPage.textContent = "Last";
+        lastPage.onclick = (e) => {
+          e.preventDefault();
+          changePage(totalPages);
+        };
+        paginationDiv.appendChild(lastPage);
+      }
+
+      paginationContainer.appendChild(paginationDiv);
+    }
+
+    function changePage(page) {
+      currentPage = page;
+      renderProducts();
+      renderPagination();
+    }
+
+    renderProducts();
+    renderPagination();
+  });
+</script>

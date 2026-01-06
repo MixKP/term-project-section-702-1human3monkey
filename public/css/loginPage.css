@@ -1,0 +1,44 @@
+
+#login .background-image {
+    background: url("../img/login-bg-img.png") 50% / cover no-repeat;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+#login .title{
+    font-family: 'Old Standard TT';
+    font-size: 5rem;
+    font-weight: 700;
+    color: #8B1A1A;
+    margin-bottom: 1rem;
+}
+
+#login .btn {
+    background-color: #8B1A1A;
+    color: white;
+    font-weight: 500;
+    border-radius: 0.4rem;
+    margin: 1rem 0;
+    padding: 0.5rem 1rem;
+}
+
+::placeholder {
+    color: #8B8F91 !important;
+    opacity: 1;
+  }
+  
+  :-ms-input-placeholder {
+    color: #8B8F91 !important;
+  }
+  
+  ::-ms-input-placeholder {
+    color: #8B8F91 !important;
+  }
+
+#login .header{
+    font-family: "Koh Santepheap", serif;
+    font-weight: 600;
+}

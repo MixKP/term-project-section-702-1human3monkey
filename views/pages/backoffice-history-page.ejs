@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DAZZLE admin - Sale History</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/backoffice-styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <%- include('../partials/backoffice/backoffice-header') %>
+
+  <!-- Mobile Navigation -->
+  <%- include('../partials/backoffice/backoffice-mobile-nav', { activePage: 'history' }) %>
+
+  <!-- Main Content -->
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar (Desktop) -->
+      <%- include('../partials/backoffice/backoffice-sidebar', { activePage: 'history' }) %>
+
+      <!-- Content Area -->
+      <%- include('../partials/backoffice/backoffice-history', { history: history }) %>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      // Toggle mobile navigation menu
+      $('#menuToggle').click(function() {
+        $('#mobileNav').toggleClass('show');
+      });
+      
+      // Handle navigation button clicks
+      $('.nav-button').click(function() {
+        $('.nav-button').removeClass('active');
+        $(this).addClass('active');
+      });
+    });
+  </script>
+</body>
+</html>

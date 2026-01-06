@@ -1,0 +1,37 @@
+<!-- views/partials/productCard.ejs -->
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-3 col-sm-6">
+      <div class="product-item card h-100">
+        <a href="/product/<%= product.product_id %>">
+          <img 
+            class="card-img-top custom-img" 
+            src="<%= product.image_path || '/public/images/placeholder.jpg' %>" 
+            alt="<%= product.product_name %>">
+          <div class="product-info card-body">
+            <h5 class="card-title"><%= product.product_name %></h5>
+            <% function truncateString(str, num) { %>
+              <% if (str.length <= num) { %>
+                <%= str %>
+              <% } else { %>
+                <%= str.slice(0, num) + '...' %>
+              <% } %>
+            <% } %>
+            <p class="text-secondary card-text">
+              <%= truncateString(product.description, 30) %>
+            </p>
+            <div class="product-price card-text">
+              <% if (product.discount_percent > 0) { %>
+                <span class="original-price">$<%= parseFloat(product.normal_price).toLocaleString() %></span>
+                <span class="discount-price">$<%= (parseFloat(product.normal_price) * (1 - parseFloat(product.discount_percent)/100)).toLocaleString() %></span>
+              <% } else { %>
+                $<%= parseFloat(product.normal_price).toLocaleString() %>
+              <% } %>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

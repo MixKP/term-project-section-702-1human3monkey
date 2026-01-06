@@ -1,0 +1,162 @@
+<body>
+  <link rel="stylesheet" href="/css/homepagestyles.css">
+  <%- include('../partials/header') %>
+  <%- include('../partials/navbarFrontPage') %>
+  <div class="container">
+    <div class="main-content">
+      <section class="highlight mb-4">
+        <h2 class="h4 border-bottom pb-2" style="padding-left: 10px;">HIGHLIGHT</h2>
+        <div id="carouselHighlight" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+          <div class="carousel-inner">
+            <% if (data.carouselImages && data.carouselImages.length > 0) { %>
+              <% data.carouselImages.forEach((img, index) => { %>
+                <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                  <a href="/category/<%= img.category_name %>">
+                    <img src="<%= img.carousel_image_path %>" class="d-block w-100" alt="Category <%= img.category_name %>">
+                  </a>
+                </div>
+              <% }) %>
+            <% } else { %>
+              <div class="carousel-item active">
+                <img src="/public/images/highlightbadge.jpg" class="d-block w-100" alt="No Image" style="height: 200px; object-fit: cover;">
+              </div>
+            <% } %>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselHighlight" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselHighlight" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="discounted-products mb-4">
+        <h2 class="h4 border-bottom pb-2">SHOP THE DISCOUNTED PRODUCTS</h2>
+        <!-- Desktop Carousel: 4 products per slide -->
+        <div id="productCarouselDesktop" class="carousel slide desktop-carousel" data-bs-ride="carousel" data-bs-interval="7000" data-bs-wrap="true">
+          <div class="carousel-inner">
+            <% if (data.discountedProducts && data.discountedProducts.length > 0) { %>
+              <% let chunkSize = 4; %>
+              <% for (let i = 0; i < Math.ceil(data.discountedProducts.length / chunkSize); i++) { %>
+                <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
+                  <div class="row g-3 product-row">
+                    <% for (let j = i * chunkSize; j < (i + 1) * chunkSize && j < data.discountedProducts.length; j++) { %>
+                      <div class="col product-col">
+                        <a href="/product/<%= data.discountedProducts[j].product_id %>">
+                          <div class="product-card card h-100">
+                            <img src="<%= data.discountedProducts[j].image_path || 'https://picsum.photos/200/300' %>" 
+                                 class="card-img-top" 
+                                 alt="<%= data.discountedProducts[j].product_name || 'Product' %>">
+                            <div class="card-body text-center">
+                              <h4 class="card-title"><%= truncateString(data.discountedProducts[j].product_name, 15) || 'Unnamed Product' %></h4>
+                              <% function truncateString(str, num) { %>
+                                <% if (str.length <= num) { %>
+                                  <% return str %>
+                                <% } %>
+                                <% return str.slice(0, num) + '...' %>
+                              <% } %>
+                              <p class="text-secondary card-text">
+                                <%= truncateString(data.discountedProducts[j].description, 20); %>
+                              </p>
+                              <p class="card-text product-price">
+                                <s><%= Number(data.discountedProducts[j].normal_price || 0).toFixed(2) %> THB</s>
+                                <% let discountedPrice = Number(data.discountedProducts[j].normal_price || 0) * (1 - Number(data.discountedProducts[j].discount_percent || 0)); %>
+                                <span class="discount-price"><%= discountedPrice.toFixed(2) %> THB </span>
+                              </p>
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+                    <% } %>
+                  </div>
+                </div>
+              <% } %>
+            <% } else { %>
+              <p>No discounted products available. Debug: <%= JSON.stringify(data) %></p>
+            <% } %>
+          </div>
+          <% if (data.discountedProducts && data.discountedProducts.length > 4) { %>
+            <button class="carousel-control-prev" type="button" data-bs-target="#productCarouselDesktop" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#productCarouselDesktop" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          <% } %>
+        </div>
+
+        <!-- Mobile Carousel: 1 product per slide -->
+        <div id="productCarouselMobile" class="carousel slide mobile-carousel" data-bs-ride="carousel" data-bs-interval="7000" data-bs-wrap="true">
+          <div class="carousel-inner">
+            <% if (data.discountedProducts && data.discountedProducts.length > 0) { %>
+              <% data.discountedProducts.forEach((product, index) => { %>
+                <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                  <div class="row g-3 product-row">
+                    <div class="col product-col">
+                      <a href="/product/<%= product.product_id %>">
+                        <div class="product-card card h-100">
+                          <img src="<%= product.image_path || 'https://picsum.photos/200/300' %>" 
+                               class="card-img-top" 
+                               alt="<%= product.product_name || 'Product' %>">
+                          <div class="card-body text-center">
+                            <h4 class="card-title"><%= truncateString(product.product_name, 15) || 'Unnamed Product' %></h4>
+                            <% function truncateString(str, num) { %>
+                              <% if (str.length <= num) { %>
+                                <% return str %>
+                              <% } %>
+                              <% return str.slice(0, num) + '...' %>
+                            <% } %>
+                            <p class="text-secondary card-text">
+                              <%= truncateString(product.description, 20); %>
+                            </p>
+                            <p class="card-text product-price">
+                              <s><%= Number(product.normal_price || 0).toFixed(2) %> THB</s>
+                              <% let discountedPrice = Number(product.normal_price || 0) * (1 - Number(product.discount_percent || 0)); %>
+                              <span class="discount-price"><%= discountedPrice.toFixed(2) %> THB </span>
+                            </p>
+                          </div>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              <% }) %>
+            <% } %>
+          </div>
+          <% if (data.discountedProducts && data.discountedProducts.length > 1) { %>
+            <button class="carousel-control-prev" type="button" data-bs-target="#productCarouselMobile" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#productCarouselMobile" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          <% } %>
+        </div>
+      </section>
+    </div>
+    <aside class="sidebar">
+      <div class="card mb-3">
+        <div class="card-body text-center">
+          <h3 class="card-title">ALL PRODUCT</h3>
+          <img src="/images/allproduct.jpg" class="card-img-top mb-2" alt="All Products" style="width: 100%; height: 100%;">
+          <a href="/products" class="btn btn-danger">View</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body text-center">
+          <h3 class="card-title">ALL CATEGORY</h3>
+          <img src="/images/allcategory.png" class="card-img-top mb-2" alt="All Categories" style="width: 100%; height: 100%;">
+          <a href="/category" class="btn btn-danger">View</a>
+        </div>
+      </div>
+    </aside>
+  </div>
+  <%- include('../partials/footer') %>
+</body>

@@ -1,0 +1,21 @@
+---
+name: "Task Template"
+description: "Template for creating new task issues"
+labels: ["task"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "Description"
+      description: "Provide a brief description of the task"
+    validations:
+      required: true
+  
+  - type: checkboxes
+    id: acceptance_criteria
+    attributes:
+      label: "Acceptance Criteria"
+      description: "List the specific criteria that must be met for task completion"
+      options:
+        - label: "First acceptance criterion"
+        - label: "Second acceptance criterion"

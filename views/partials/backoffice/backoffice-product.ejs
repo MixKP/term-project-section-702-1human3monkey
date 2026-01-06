@@ -1,0 +1,92 @@
+<div class="col-md-16 col-lg-10">
+  <div class="content">
+    <div class="search-container">
+      <div class="input-group">
+        <select id="categoryFilter" class="form-control">
+          <option value="all">All Categories</option>
+          <% categories.forEach(category => { %> <option value="<%=
+          category.category_id %>" <%= selectedCategory == category.category_id
+          ? 'selected' : '' %>><%= category.category_name %> <% }) %>
+        </select>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Normal Price</th>
+            <th>Discount Percent</th>
+            <th class="action-cell"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% products.forEach(product => { %>
+          <tr>
+            <td data-cell="Image">
+              <img
+                src="<%= product.image_path %>"
+                alt="<%= product.product_name %>"
+                class="img-thumbnail"
+              />
+            </td>
+            <td data-cell="Products Name"><%= product.product_name %></td>
+            <td data-cell="Description"><%= product.description %></td>
+            <td data-cell="Category"><%= product.category_name %></td>
+            <td data-cell="Price"><%= product.normal_price %></td>
+            <td data-cell="Discount"><%= product.discount_percent %></td>
+            <td data-cell="Action">
+              <a
+                href="/backoffice/product/edit/<%= product.product_id %>"
+                class="btn btn-warning btn-sm"
+                >Edit</a
+              >
+              <button
+                class="btn btn-danger btn-sm delete-product"
+                data-id="<%= product.product_id %>"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+  $(document).ready(function () {
+    // Handle delete product
+    $(".delete-product").on("click", function () {
+      const productId = $(this).data("id");
+      if (confirm("Are you sure you want to delete this product?")) {
+        $.ajax({
+          url: `/backoffice/product/${productId}`,
+          method: "DELETE",
+          success: function (response) {
+            alert(response.message);
+            window.location.href = response.redirect;
+          },
+          error: function (xhr) {
+            alert(xhr.responseJSON.error);
+          },
+        });
+      }
+    });
+
+    $("#categoryFilter").on("change", function () {
+      const selectedCategory = $(this).val();
+      if (selectedCategory === "all") {
+        window.location.href = "/backoffice/product";
+      } else {
+        window.location.href = `/backoffice/product/category/${selectedCategory}`;
+      }
+    });
+  });
+</script>

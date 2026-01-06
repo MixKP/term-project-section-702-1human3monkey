@@ -1,0 +1,84 @@
+<%- include('../partials/header') %>
+
+  <!-- Include the navbar -->
+  <%- include('../partials/navbarFrontPage') %>
+
+    <!-- Category Content -->
+    <div class="container my-5">
+      <h1 class="text-center mb-5">ALL CATEGORIES</h1>
+
+      <div class="category-carousel">
+        <button class="carousel-nav" id="prevBtn"><i class="bi bi-arrow-left"></i></button>
+
+        <div class="carousel-content">
+          <div class="carousel-track">
+            <% categories.forEach((category, index)=> { %>
+              <div class="category-item" data-index="<%= index %>">
+                <a href="/category/<%= encodeURIComponent(category.name) %>" class="text-decoration-none">
+                  <div class="category-box">
+                    <div class="category-icon">
+                      <img src="<%= category.icon %>" alt="<%= category.name %>" class="img-fluid">
+                    </div>
+                    <div class="category-text">
+                      <%= category.name %>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <% }); %>
+          </div>
+        </div>
+
+        <button class="carousel-nav" id="nextBtn"><i class="bi bi-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const carouselTrack = document.querySelector('.carousel-track');
+        const items = document.querySelectorAll('.category-item');
+        const totalItems = items.length; // 4 items: SHIRT, PANT, HOOD, DRESS
+        let startIndex = 0; // Index of the first visible item
+        const itemsPerView = window.innerWidth < 768 ? 1 : 3;
+
+        // Function to reposition the items
+        function updateCarousel() {
+          // Get the new order of items
+          let newOrder = [];
+          for (let i = 0; i < totalItems; i++) {
+            // Calculate the index with wrap-around
+            const itemIndex = (startIndex + i) % totalItems;
+            newOrder.push(items[itemIndex]);
+          }
+
+          // Clear the track and append items in the new order
+          while (carouselTrack.firstChild) {
+            carouselTrack.removeChild(carouselTrack.firstChild);
+          }
+
+          newOrder.forEach(item => {
+            carouselTrack.appendChild(item.cloneNode(true));
+          });
+
+        }
+
+        // Previous button - move one item at a time
+        document.getElementById('prevBtn').addEventListener('click', function () {
+          // Move back one item
+          startIndex = (startIndex - 1 + totalItems) % totalItems;
+          updateCarousel();
+        });
+
+        // Next button - move one item at a time
+        document.getElementById('nextBtn').addEventListener('click', function () {
+          // Move forward one item
+          startIndex = (startIndex + 1) % totalItems;
+          updateCarousel();
+        });
+
+        // Initialize
+        updateCarousel();
+      });
+    </script>
+
+    <%- include('../partials/footer') %>

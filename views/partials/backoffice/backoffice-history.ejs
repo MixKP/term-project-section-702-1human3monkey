@@ -1,0 +1,31 @@
+<div class="col-md-9 col-lg-10">
+    <div class="content">
+  
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Product Name</th>
+              <th>Color</th>
+              <th>Size</th>
+              <th>Quantity</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% history.forEach(item => { %>
+              <tr>
+                <td data-cell="User"><%= item.userId %></td>
+                <td data-cell="Product Name"><%= item.productname %></td>
+                <td data-cell="Color"><%= item.color %></td>
+                <td data-cell="Size"><%= item.size %></td>
+                <td data-cell="Quantity"><%= item.quantity %></td>
+                <td data-cell="Price"><%= item.price %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
